@@ -1,3 +1,6 @@
+package managers;
+
+import managers.history.HistoryManager;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
@@ -6,25 +9,29 @@ import tasks.TaskStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TaskManager {
+public class InMemoryTaskManager implements TaskManager {
 
     private int counterTaskId = 0;
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
     
+    @Override
     public void addTask(Task task) {
         final int taskId = ++counterTaskId;
         task.setId(taskId);
         tasks.put(taskId, task);
     }
     
+    @Override
     public void addEpic(Epic epic) {
         final int epicId = ++counterTaskId;
         epic.setId(epicId);
         epics.put(epicId, epic);
     }
     
+    @Override
     public void addSubTask(SubTask subTask) {
         Epic epic = epics.get(subTask.getEpicId());
         if (epic == null) {
@@ -37,43 +44,59 @@ public class TaskManager {
         updateEpicStatus(epic.getId());
     }
     
+    @Override
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
     }
     
+    @Override
     public void updateEpic(Epic epic) {
         tasks.put(epic.getId(), epic);
     }
     
+    @Override
     public void updateSubTask(SubTask subTask) {
         subTasks.put(subTask.getId(), subTask);
         updateEpicStatus(subTask.getEpicId());
     }
     
+    @Override
     public Task getTask(int taskId) {
-        return tasks.get(taskId);
+        Task task = tasks.get(taskId);
+        historyManager.add(task);
+        return task;
     }
     
+    @Override
     public Epic getEpic(int epicId) {
-        return epics.get(epicId);
+        Epic epic = epics.get(epicId);
+        historyManager.add(epic);
+        return epic;
     }
     
+    @Override
     public SubTask getSubTask(int subTaskId) {
-        return subTasks.get(subTaskId);
+        SubTask subTask = subTasks.get(subTaskId);
+        historyManager.add(subTask);
+        return subTask;
     }
     
+    @Override
     public ArrayList<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
     
+    @Override
     public ArrayList<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
     
+    @Override
     public ArrayList<SubTask> getSubTasks() {
         return new ArrayList<>(subTasks.values());
     }
     
+    @Override
     public ArrayList<SubTask> getEpicSubtasks(int epicId) {
         Epic epic = epics.get(epicId);
         if (epic == null) {
@@ -86,10 +109,12 @@ public class TaskManager {
         return subTasksList;
     }
     
+    @Override
     public void removeTask(int taskId) {
         tasks.remove(taskId);
     }
     
+    @Override
     public void removeEpic(int epicId) {
         Epic epic = epics.get(epicId);
         if (epic == null) {
@@ -101,6 +126,7 @@ public class TaskManager {
         epics.remove(epicId);
     }
     
+    @Override
     public void removeSubTask(int subTaskId) {
         SubTask subTask = subTasks.get(subTaskId);
         if (subTask == null) {
@@ -112,25 +138,28 @@ public class TaskManager {
         updateEpicStatus(subTask.getEpicId());
     }
     
+    @Override
     public void removeTasks() {
         for (int taskId : tasks.keySet()) {
             removeTask(taskId);
         }
     }
     
+    @Override
     public void removeEpics() {
         for (int epicId : new ArrayList<>(epics.keySet())) {
             removeEpic(epicId);
         }
     }
     
+    @Override
     public void removeSubTasks() {
         for (int taskId : subTasks.keySet()) {
             removeSubTask(taskId);
         }
     }
     
-    public void updateEpicStatus(int epicId) {
+    private void updateEpicStatus(int epicId) {
         Epic epic = epics.get(epicId);
         if (epic.getSubTaskIds().isEmpty()) {
             epic.setStatus(TaskStatus.NEW);
