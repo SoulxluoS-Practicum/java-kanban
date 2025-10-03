@@ -2,10 +2,10 @@ package tasks;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
-    
+
     @Test
     void testEquals() {
         Epic epic1 = new Epic("Epic-1 Name", "Epic-1 Description");
