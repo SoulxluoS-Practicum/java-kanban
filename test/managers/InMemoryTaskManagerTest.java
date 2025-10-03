@@ -94,6 +94,7 @@ class InMemoryTaskManagerTest {
         taskManager.addTask(task);
         taskManager.removeTask(task.getId());
         assertTrue(taskManager.getTasks().isEmpty());
+        assertTrue(taskManager.getSubTasks().isEmpty(), "Manager содержит удалённый Task");
     }
     
     @Test
@@ -102,6 +103,7 @@ class InMemoryTaskManagerTest {
         taskManager.addEpic(epic);
         taskManager.removeEpic(epic.getId());
         assertTrue(taskManager.getEpics().isEmpty());
+        assertTrue(taskManager.getSubTasks().isEmpty(), "Manager содержит удалённый Epic");
     }
     
     @Test
@@ -111,7 +113,8 @@ class InMemoryTaskManagerTest {
         SubTask subTask = new SubTask("SubTask-1 Name", "SubTask-1 Description", epic.getId());
         taskManager.addSubTask(subTask);
         taskManager.removeSubTask(subTask.getId());
-        assertTrue(taskManager.getSubTasks().isEmpty());
+        assertTrue(epic.getSubTaskIds().isEmpty(),"Epic содержит удалённый SubTask");
+        assertTrue(taskManager.getSubTasks().isEmpty(), "Manager содержит удалённый SubTask");
     }
     
     @Test
