@@ -2,10 +2,10 @@ package tasks;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskTest {
-    
+
     @Test
     void testEquals() {
         Task task1 = new Task("Task-1 Name", "Task-1 Description");
