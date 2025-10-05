@@ -11,22 +11,22 @@ import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
-    private int counterTaskId = 0;
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Epic> epics = new HashMap<>();
+    protected final HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected int taskIdCounter = 0;
 
     @Override
     public void addTask(Task task) {
-        final int taskId = ++counterTaskId;
+        final int taskId = ++taskIdCounter;
         task.setId(taskId);
         tasks.put(taskId, task);
     }
 
     @Override
     public void addEpic(Epic epic) {
-        final int epicId = ++counterTaskId;
+        final int epicId = ++taskIdCounter;
         epic.setId(epicId);
         epics.put(epicId, epic);
     }
@@ -37,7 +37,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic == null) {
             return;
         }
-        final int subTaskId = ++counterTaskId;
+        final int subTaskId = ++taskIdCounter;
         subTask.setId(subTaskId);
         subTasks.put(subTaskId, subTask);
         epic.addSubTaskID(subTaskId);

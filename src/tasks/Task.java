@@ -9,9 +9,10 @@ import java.util.Objects;
 public class Task {
 
     protected int id;
+    protected TaskType type;
     protected String name;
-    protected String description;
     protected TaskStatus status;
+    protected String description;
 
     public Task(String name, String description) {
         this(name, description, TaskStatus.NEW);
@@ -21,6 +22,7 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = TaskType.TASK;
     }
 
     public int getId() {
@@ -53,6 +55,10 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     @Override
