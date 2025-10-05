@@ -57,7 +57,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new ManagerLoadException("Ошибка при чтении файла: " + file.getName(), e);
+            throw new ManagerLoadException("Ошибка при чтении файла: %s".formatted(file.getName()), e);
         }
     }
 
@@ -84,7 +84,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла: " + file.getName(), e);
+            throw new ManagerSaveException("Ошибка при сохранении файла: %s".formatted(file.getName()), e);
         }
     }
 

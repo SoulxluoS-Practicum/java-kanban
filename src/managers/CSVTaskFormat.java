@@ -61,7 +61,7 @@ public class CSVTaskFormat {
                 }
             };
         } catch (Exception e) {
-            System.err.println("Ошибка при чтении задачи из файла");
+            System.err.printf("Ошибка при чтении задачи из строки: %s%n", str);
             e.printStackTrace();
         }
         return null;
