@@ -5,6 +5,7 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public interface TaskManager {
     void addTask(Task task);
@@ -33,6 +34,8 @@ public interface TaskManager {
 
     ArrayList<SubTask> getEpicSubtasks(int epicId);
 
+    TreeSet<Task> getPrioritizedTasks();
+
     void removeTask(int taskId);
 
     void removeEpic(int epicId);
@@ -44,4 +47,6 @@ public interface TaskManager {
     void removeEpics();
 
     void removeSubTasks();
+
+    boolean hasOverlaps(Task task);
 }

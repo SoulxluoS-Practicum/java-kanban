@@ -9,7 +9,6 @@ import tasks.Task;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
@@ -38,25 +37,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             linesList.removeFirst(); //remove Header
             for (String line : linesList) {
                 Task task = CSVTaskFormat.fromString(line);
-                if (task != null) {
-                    switch (task.getType()) {
-                        case EPIC -> epics.put(task.getId(), (Epic) task);
-                        case SUBTASK -> {
-                            SubTask subTask = (SubTask) task;
-                            Epic epic = epics.get(subTask.getEpicId());
-                            if (epic == null) {
-                                continue;
-                            }
-                            int subTaskId = task.getId();
-                            subTasks.put(subTaskId, subTask);
-                            epic.addSubTaskID(subTaskId);
+                switch (task.getType()) {
+                    case EPIC -> epics.put(task.getId(), (Epic) task);
+                    case SUBTASK -> {
+                        SubTask subTask = (SubTask) task;
+                        Epic epic = epics.get(subTask.getEpicId());
+                        if (epic == null) {
+                            continue;
                         }
-                        case TASK -> tasks.put(task.getId(), task);
+                        int subTaskId = task.getId();
+                        subTasks.put(subTaskId, subTask);
+                        epic.addSubTaskID(subTaskId);
                     }
-                    taskIdCounter = task.getId();
+                    case TASK -> tasks.put(task.getId(), task);
                 }
+                taskIdCounter = task.getId();
+                sortedTasks.add(task);
             }
-        } catch (IOException e) {
+            //for updateDateTimes
+            epics.keySet().forEach(this::updateEpicStatus);
+        } catch (Exception e) {
             throw new ManagerLoadException("Ошибка при чтении файла: %s".formatted(file.getName()), e);
         }
     }
@@ -83,7 +83,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(CSVTaskFormat.toString(task));
                 writer.newLine();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ManagerSaveException("Ошибка при сохранении файла: %s".formatted(file.getName()), e);
         }
     }
