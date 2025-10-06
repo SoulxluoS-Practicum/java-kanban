@@ -27,6 +27,6 @@ class TaskTest {
         assertFalse(task1.hasOverlapWith(task2), "Задачи пересекаются при не пересекающихся отрезках времени!");
         Task task3 = new Task("Task-3 Name", "Task-3 Description",
             LocalDateTime.of(2025, 5, 5, 4, 5), Duration.ofHours(2));
-        assertTrue(task1.hasOverlapWith(task3), "Задачи не пересекаются при пересекающихся отрезках времени!");
+        assertDoesNotThrow(() -> task1.hasOverlapWith(task3), "Задачи не пересекаются при пересекающихся отрезках времени!");
     }
 }

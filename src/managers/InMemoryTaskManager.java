@@ -1,12 +1,17 @@
 package managers;
 
+import exceptions.NotFoundException;
+import exceptions.TaskOverlapException;
 import managers.history.HistoryManager;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 import tasks.TaskStatus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -19,10 +24,9 @@ public class InMemoryTaskManager implements TaskManager {
     protected int taskIdCounter = 0;
 
     @Override
-    public void addTask(Task task) {
+    public int addTask(Task task) {
         if (hasOverlaps(task)) {
-            System.err.printf("Задача %s не добавлена из-за пересечение с другой задачей по времени!%n", task.getName());
-            return;
+            throw new TaskOverlapException("Задача %s не добавлена - пересечение по времени с другой задачей!".formatted(task.getName()));
         }
         final int taskId = ++taskIdCounter;
         task.setId(taskId);
@@ -30,31 +34,28 @@ public class InMemoryTaskManager implements TaskManager {
         if (task.getStartTime().isPresent()) {
             sortedTasks.add(task);
         }
+        return taskId;
     }
 
     @Override
-    public void addEpic(Epic epic) {
-        if (hasOverlaps(epic)) {
-            System.err.printf("Задача %s не добавлена из-за пересечение с другой задачей по времени!%n", epic.getName());
-            return;
-        }
+    public int addEpic(Epic epic) {
         final int epicId = ++taskIdCounter;
         epic.setId(epicId);
         epics.put(epicId, epic);
         if (epic.getStartTime().isPresent()) {
             sortedTasks.add(epic);
         }
+        return epicId;
     }
 
     @Override
-    public void addSubTask(SubTask subTask) {
+    public int addSubTask(SubTask subTask) {
         if (hasOverlaps(subTask)) {
-            System.err.printf("Задача %s не добавлена из-за пересечение с другой задачей по времени!%n", subTask.getName());
-            return;
+            throw new TaskOverlapException("Подзадача %s не добавлена - пересечение по времени с другой задачей!".formatted(subTask.getName()));
         }
         Epic epic = epics.get(subTask.getEpicId());
         if (epic == null) {
-            return;
+            throw new NotFoundException("Подзадача %s не добавлена - не найдена главная задача!".formatted(subTask.getName()));
         }
         final int subTaskId = ++taskIdCounter;
         subTask.setId(subTaskId);
@@ -64,39 +65,43 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTask.getStartTime().isPresent()) {
             sortedTasks.add(subTask);
         }
+        return subTaskId;
     }
 
     @Override
     public void updateTask(Task task) {
         if (hasOverlaps(task)) {
-            System.err.printf("Задача %s не добавлена из-за пересечение с другой задачей по времени!%n", task.getName());
-            return;
+            throw new TaskOverlapException("Задача %s не обновлена - пересечение по времени с другой задачей!".formatted(task.getName()));
         }
         tasks.put(task.getId(), task);
+        if (task.getStartTime().isPresent()) {
+            sortedTasks.add(task);
+        }
     }
 
     @Override
     public void updateEpic(Epic epic) {
-        if (hasOverlaps(epic)) {
-            System.err.printf("Задача %s не добавлена из-за пересечение с другой задачей по времени!%n", epic.getName());
-            return;
-        }
         tasks.put(epic.getId(), epic);
     }
 
     @Override
     public void updateSubTask(SubTask subTask) {
         if (hasOverlaps(subTask)) {
-            System.err.printf("Задача %s не добавлена из-за пересечение с другой задачей по времени!%n", subTask.getName());
-            return;
+            throw new TaskOverlapException("Подзадача %s не обновлена - пересечение по времени с другой задачей!".formatted(subTask.getName()));
         }
         subTasks.put(subTask.getId(), subTask);
+        if (subTask.getStartTime().isPresent()) {
+            sortedTasks.add(subTask);
+        }
         updateEpicStatus(subTask.getEpicId());
     }
 
     @Override
     public Task getTask(int taskId) {
         Task task = tasks.get(taskId);
+        if (task == null) {
+            throw new NotFoundException("Задача %s не найдена!".formatted(taskId));
+        }
         historyManager.add(task);
         return task;
     }
@@ -104,6 +109,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpic(int epicId) {
         Epic epic = epics.get(epicId);
+        if (epic == null) {
+            throw new NotFoundException("Задача %s не найдена!".formatted(epicId));
+        }
         historyManager.add(epic);
         return epic;
     }
@@ -111,6 +119,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public SubTask getSubTask(int subTaskId) {
         SubTask subTask = subTasks.get(subTaskId);
+        if (subTask == null) {
+            throw new NotFoundException("Задача %s не найдена!".formatted(subTask));
+        }
         historyManager.add(subTask);
         return subTask;
     }
@@ -138,7 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<SubTask> getEpicSubtasks(int epicId) {
         Epic epic = epics.get(epicId);
         if (epic == null) {
-            return null;
+            throw new NotFoundException("Задача %s не найдена!".formatted(epicId));
         }
         return epic.getSubTaskIds().stream()
             .map(subTasks::get)
@@ -250,6 +261,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     public boolean hasOverlaps(Task task) {
         return sortedTasks.stream().anyMatch(task::hasOverlapWith);
+    }
+
+    @Override
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 
 }
