@@ -4,6 +4,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -41,11 +42,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private ArrayList<Task> getTasks() {
-        ArrayList<Task> tasks = new ArrayList<>(nodeMap.size());
-        for (Node node : nodeMap.values()) {
-            tasks.add(node.task);
-        }
-        return tasks;
+        return nodeMap.values().stream()
+            .map(node -> node.task)
+            .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private void removeNode(int id) {
@@ -54,29 +53,49 @@ public class InMemoryHistoryManager implements HistoryManager {
             return;
         }
 
-        if (first == last) { // if delete lone
+        if (first == last) {
             first = null;
             last = null;
             return;
         }
 
-        if (node == first) { //if delete first
+        if (node == first) {
             first = node.next;
             first.prev = null;
-        } else if (node == last) { //if delete last
+        } else if (node == last) {
             last = node.prev;
             last.next = null;
-        } else { //if delete middle
+        } else {
             node.prev.next = node.next;
             node.next.prev = node.prev;
         }
     }
 
-    private static class Node {
+    public Node getFirst() {
+        return first;
+    }
+
+    public Node getLast() {
+        return last;
+    }
+
+    public static class Node {
 
         private final Task task;
         private Node next;
         private Node prev;
+
+        public Task getTask() {
+            return task;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+
+        public Node getPrev() {
+            return prev;
+        }
 
         private Node(Task data) {
             this.task = data;
