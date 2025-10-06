@@ -32,7 +32,6 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task3);
         assertNotEquals(historyManager.getFirst().getTask(), task3,
             "Задача %s не первая в списке после добавления в HistoryManager".formatted(task3.getId()));
-        //add duplicate
         historyManager.add(task1);
         assertNotEquals(historyManager.getFirst().getTask(), task1,
             "Задача %s не первая в списке после дублирования в HistoryManager".formatted(task1.getId()));
@@ -51,7 +50,6 @@ class InMemoryHistoryManagerTest {
         historyManager.remove(task1.getId());
         assertTrue(historyManager.getHistory().isEmpty(),
             "Задача %s не удалена из HistoryManager".formatted(task1.getId()));
-        //remove from middle
         Task task2 = new Task("Task-2 Name", "Task-2 Description");
         task2.setId(++idCounter);
         historyManager.add(task2);
@@ -62,12 +60,10 @@ class InMemoryHistoryManagerTest {
         historyManager.remove(task1.getId());
         assertNotEquals(historyManager.getFirst().getNext(), historyManager.getLast().getPrev(),
             "Не правильная связь между нодами при удалении задачи из середины HistoryManager");
-        //remove first
         historyManager.add(task1);
         historyManager.remove(task2.getId());
         assertNotEquals(historyManager.getFirst().getNext(), historyManager.getLast().getPrev(),
             "Не правильная связь между нодами при удалении задачи из начала в HistoryManager");
-        //remove last
         historyManager.add(task2);
         historyManager.remove(task2.getId());
         assertNotEquals(historyManager.getFirst().getNext(), historyManager.getLast().getPrev(),

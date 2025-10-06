@@ -34,7 +34,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             if (linesList.isEmpty()) {
                 return;
             }
-            linesList.removeFirst(); //remove Header
+            linesList.removeFirst();
             for (String line : linesList) {
                 Task task = CSVTaskFormat.fromString(line);
                 switch (task.getType()) {
@@ -54,7 +54,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 taskIdCounter = task.getId();
                 sortedTasks.add(task);
             }
-            //for updateDateTimes
             epics.keySet().forEach(this::updateEpicStatus);
         } catch (Exception e) {
             throw new ManagerLoadException("Ошибка при чтении файла: %s".formatted(file.getName()), e);

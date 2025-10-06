@@ -53,19 +53,19 @@ public class InMemoryHistoryManager implements HistoryManager {
             return;
         }
 
-        if (first == last) { // if delete lone
+        if (first == last) {
             first = null;
             last = null;
             return;
         }
 
-        if (node == first) { //if delete first
+        if (node == first) {
             first = node.next;
             first.prev = null;
-        } else if (node == last) { //if delete last
+        } else if (node == last) {
             last = node.prev;
             last.next = null;
-        } else { //if delete middle
+        } else {
             node.prev.next = node.next;
             node.next.prev = node.prev;
         }

@@ -48,7 +48,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         taskManager.addEpic(epic);
         SubTask subTask = new SubTask("SubTask-1 Name", "SubTask-1 Description", epic.getId());
         taskManager.addSubTask(subTask);
-
         taskManager.tasks.clear();
         taskManager.subTasks.clear();
         taskManager.epics.clear();
@@ -60,7 +59,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void testExceptions() {
-        //write bad string for parse
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path.toFile(), StandardCharsets.UTF_8))) {
             writer.write(CSVTaskFormat.getHeader());
             writer.newLine();
@@ -71,8 +69,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         assertThrows(ManagerLoadException.class,
             () -> taskManager.addTasksFromFile(),
             "Ошибка при чтении файла: %s".formatted(path.toFile().getName()));
-
-        //add brokenTask
         assertThrows(ManagerSaveException.class,
             () -> {
                 Task brokenTask = new Task(null, null);
