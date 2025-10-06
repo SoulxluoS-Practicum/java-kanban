@@ -10,10 +10,11 @@ import java.util.Arrays;
 
 public class CSVTaskFormat {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm_dd:MM:yyyy");
+
     public static String getHeader() {
         return "id,type,name,status,description,startTime,duration,epic";
     }
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm_dd:MM:yyyy");
 
     public static String toString(Task task) {
         String result = strJoinObj(",",
