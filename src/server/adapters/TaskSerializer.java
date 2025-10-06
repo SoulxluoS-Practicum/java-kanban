@@ -28,7 +28,8 @@ public class TaskSerializer<T extends Task> implements JsonDeserializer<T>, Json
             .create();
     }
 
-    @Override @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
+    @Override
     public T deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
         if (jsonObject.has("type")) {
