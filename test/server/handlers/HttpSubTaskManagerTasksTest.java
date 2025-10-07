@@ -34,9 +34,10 @@ class HttpSubTaskManagerTasksTest extends HttpTasksTest {
 
         List<SubTask> tasksFromManager = taskManager.getSubTasks();
 
-        assertNotNull(tasksFromManager, "Задачи не возвращаются");
-        assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
-        assertEquals("SubTask-1", tasksFromManager.getFirst().getName(), "Некорректное имя задачи");
+        assertNotNull(tasksFromManager, "Список SubTask задач у сервера равен null");
+        assertEquals(1, tasksFromManager.size(), "Некорректное количество SubTask задач после добавления: %s != 1".formatted(tasksFromManager.size()));
+        String taskName = tasksFromManager.getFirst().getName();
+        assertEquals("SubTask-1", taskName, "Некорректное имя %s созданной SubTask задачи".formatted(taskName));
     }
 
     @Test
@@ -52,9 +53,10 @@ class HttpSubTaskManagerTasksTest extends HttpTasksTest {
 
         List<SubTask> tasksFromManager = taskManager.getSubTasks();
 
-        assertNotNull(tasksFromManager, "Задачи не возвращаются");
-        assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
-        assertEquals("SubTask-1", tasksFromManager.getFirst().getName(), "Некорректное имя задачи");
+        assertNotNull(tasksFromManager, "Список SubTask задач у сервера равен null");
+        assertEquals(1, tasksFromManager.size(), "Некорректное количество SubTask задач после обновления: %s != 1".formatted(tasksFromManager.size()));
+        String taskName = tasksFromManager.getFirst().getName();
+        assertEquals("SubTask-1", taskName, "Некорректное имя %s обновлённой SubTask задачи".formatted(taskName));
     }
 
     @Test
@@ -69,8 +71,8 @@ class HttpSubTaskManagerTasksTest extends HttpTasksTest {
 
         List<SubTask> tasksFromManager = taskManager.getSubTasks();
 
-        assertNotNull(tasksFromManager, "Задачи не возвращаются");
-        assertEquals(0, tasksFromManager.size(), "Некорректное количество задач");
+        assertNotNull(tasksFromManager, "Список SubTask задач у сервера равен null");
+        assertEquals(0, tasksFromManager.size(), "Некорректное количество SubTask задач после удаления: %s != 0".formatted(tasksFromManager.size()));
     }
 
     @Test
@@ -85,13 +87,15 @@ class HttpSubTaskManagerTasksTest extends HttpTasksTest {
 
         List<SubTask> tasksResponse = gson.fromJson(response.body(), new TypeToken<List<SubTask>>() {}.getType());
         List<SubTask> tasksFromManager = taskManager.getSubTasks();
-
-        assertNotNull(tasksResponse, "Задачи не возвращаются");
-        assertEquals(tasksResponse, tasksFromManager, "Задачи на сервере и из запроса клиента не равны");
+        
+        assertNotNull(tasksResponse, "Список SubTask задач у сервера равен null");
+        assertNotNull(tasksFromManager, "Список SubTask задач у клиента равен null");
+        assertEquals(tasksResponse, tasksFromManager, "Списки SubTask задач у сервера и у клиента не равны");
     }
 
     @Test
-    void getTaskByID() throws IOException, InterruptedException {Epic epic = new Epic("Epic-1", "Epic-1 Description");
+    void getTaskByID() throws IOException, InterruptedException {
+        Epic epic = new Epic("Epic-1", "Epic-1 Description");
         taskManager.addEpic(epic);
         SubTask task = new SubTask("SubTask-1", "SubTask-1 Description", LocalDateTime.now(), Duration.ofMinutes(5), epic.getId());
         int taskId = taskManager.addSubTask(task);
@@ -102,8 +106,8 @@ class HttpSubTaskManagerTasksTest extends HttpTasksTest {
         SubTask taskResponse = gson.fromJson(response.body(), SubTask.class);
         SubTask taskFromManager = taskManager.getSubTask(taskId);
 
-        assertNotNull(taskResponse, "Задачи не возвращаются");
-        assertEquals(taskResponse, taskFromManager, "Задача на сервере и из запроса клиента не равны");
+        assertNotNull(taskResponse, "SubTask задача у клиента равна null");
+        assertEquals(taskResponse, taskFromManager, "SubTask задача у сервера и у клиента не равны");
     }
 
 }

@@ -44,8 +44,9 @@ public class HttpHistoryTest extends HttpTasksTest {
         List<Task> tasksResponse = gson.fromJson(response.body(), new TypeToken<List<Task>>() {}.getType());
         List<Task> tasksFromManager = taskManager.getHistoryManager().getHistory();
 
-        assertNotNull(tasksResponse, "История задач не возвращается");
-        assertEquals(tasksResponse, tasksFromManager, "История задач на сервере и из запроса клиента не равны");
+        assertNotNull(tasksResponse, "История задач у клиента равна null");
+        assertNotNull(tasksFromManager, "История задач у сервера равна null");
+        assertEquals(tasksResponse, tasksFromManager, "История задач у сервера и у клиента не равны");
     }
 
 }

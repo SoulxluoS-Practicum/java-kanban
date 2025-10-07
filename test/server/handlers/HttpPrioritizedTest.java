@@ -44,9 +44,10 @@ public class HttpPrioritizedTest extends HttpTasksTest {
 
         TreeSet<Task> tasksResponse = gson.fromJson(response.body(), new TypeToken<TreeSet<Task>>() {}.getType());
         TreeSet<Task> tasksFromManager = taskManager.getPrioritizedTasks();
-
-        assertNotNull(tasksResponse, "История задач не возвращается");
-        assertEquals(tasksResponse, tasksFromManager, "История задач на сервере и из запроса клиента не равны");
+        
+        assertNotNull(tasksResponse, "Список задач по приоритету у клиента равен null");
+        assertNotNull(tasksFromManager, "Список задач по приоритету у сервера равен null");
+        assertEquals(tasksResponse, tasksFromManager, "Список задач у сервера и у клиента не равны");
     }
 
 }

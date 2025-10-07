@@ -31,10 +31,11 @@ class HttpEpicTaskManagerTasksTest extends HttpTasksTest {
         assertEquals(200, response.statusCode());
 
         List<Epic> tasksFromManager = taskManager.getEpics();
-
-        assertNotNull(tasksFromManager, "Задачи не возвращаются");
-        assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
-        assertEquals("Epic-1", tasksFromManager.getFirst().getName(), "Некорректное имя задачи");
+        
+        assertNotNull(tasksFromManager, "Список Epic задач у сервера равен null");
+        assertEquals(1, tasksFromManager.size(), "Некорректное количество Epic задач после добавления: %s != 1".formatted(tasksFromManager.size()));
+        String taskName = tasksFromManager.getFirst().getName();
+        assertEquals("Epic-1", taskName, "Некорректное имя %s созданной Epic задачи".formatted(taskName));
     }
 
     @Test
@@ -46,9 +47,9 @@ class HttpEpicTaskManagerTasksTest extends HttpTasksTest {
         assertEquals(201, response.statusCode());
 
         List<Epic> tasksFromManager = taskManager.getEpics();
-
-        assertNotNull(tasksFromManager, "Задачи не возвращаются");
-        assertEquals(0, tasksFromManager.size(), "Некорректное количество задач");
+        
+        assertNotNull(tasksFromManager, "Список Epic задач у сервера равен null");
+        assertEquals(0, tasksFromManager.size(), "Некорректное количество Epic задач после удаления: %s != 0".formatted(tasksFromManager.size()));
     }
 
     @Test
@@ -61,9 +62,10 @@ class HttpEpicTaskManagerTasksTest extends HttpTasksTest {
 
         List<Epic> tasksResponse = gson.fromJson(response.body(), new TypeToken<List<Epic>>() {}.getType());
         List<Epic> tasksFromManager = taskManager.getEpics();
-
-        assertNotNull(tasksResponse, "Задачи не возвращаются");
-        assertEquals(tasksResponse, tasksFromManager, "Задачи на сервере и из запроса клиента не равны");
+        
+        assertNotNull(tasksResponse, "Список Epic задач у клиента равен null");
+        assertNotNull(tasksFromManager, "Список Epic задач у сервера равен null");
+        assertEquals(tasksResponse, tasksFromManager, "Списки Epic задач у сервера и у клиента не равны");
     }
 
     @Test
@@ -76,9 +78,9 @@ class HttpEpicTaskManagerTasksTest extends HttpTasksTest {
 
         Epic taskResponse = gson.fromJson(response.body(), Epic.class);
         Epic taskFromManager = taskManager.getEpic(taskId);
-
-        assertNotNull(taskResponse, "Задачи не возвращаются");
-        assertEquals(taskResponse, taskFromManager, "Задача на сервере и из запроса клиента не равны");
+        
+        assertNotNull(taskResponse, "Epic задача у клиента равна null");
+        assertEquals(taskResponse, taskFromManager, "Epic задача у сервера и у клиента не равны");
     }
 
     @Test
@@ -93,9 +95,10 @@ class HttpEpicTaskManagerTasksTest extends HttpTasksTest {
 
         List<SubTask> tasksResponse = gson.fromJson(response.body(), new TypeToken<List<SubTask>>() {}.getType());
         List<SubTask> tasksFromManager = taskManager.getEpicSubtasks(taskId);
-
-        assertNotNull(tasksResponse, "Задачи не возвращаются");
-        assertEquals(tasksResponse, tasksFromManager, "Задачи на сервере и из запроса клиента не равны");
+        
+        assertNotNull(tasksResponse, "Список Epic задач у клиента равен null");
+        assertNotNull(tasksFromManager, "Список Epic задач у сервера равен null");
+        assertEquals(tasksResponse, tasksFromManager, "Списки SubTask задач в Epic у сервера и у клиента не равны");
     }
 
 }
