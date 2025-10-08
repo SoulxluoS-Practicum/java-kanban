@@ -1,5 +1,6 @@
 package managers;
 
+import managers.history.HistoryManager;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
@@ -8,11 +9,11 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 public interface TaskManager {
-    void addTask(Task task);
+    int addTask(Task task);
 
-    void addEpic(Epic epic);
+    int addEpic(Epic epic);
 
-    void addSubTask(SubTask subTask);
+    int addSubTask(SubTask subTask);
 
     void updateTask(Task task);
 
@@ -49,4 +50,6 @@ public interface TaskManager {
     void removeSubTasks();
 
     boolean hasOverlaps(Task task);
+
+    HistoryManager getHistoryManager();
 }

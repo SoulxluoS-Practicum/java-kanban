@@ -85,7 +85,10 @@ public class Task implements Comparable<Task> {
     }
 
     public boolean hasOverlapWith(Task task2) {
-        if (this.getEndTime().isEmpty() || task2.getEndTime().isEmpty()) {
+        if (id == task2.getId() || this.getEndTime().isEmpty() || task2.getEndTime().isEmpty()) {
+            return false;
+        }
+        if (task2 instanceof Epic epic && epic.getSubTaskIds().contains(id)) {
             return false;
         }
         LocalDateTime start1 = this.startTime;

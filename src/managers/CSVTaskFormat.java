@@ -1,6 +1,6 @@
 package managers;
 
-import managers.exceptions.ManagerLoadException;
+import exceptions.ManagerLoadException;
 import tasks.*;
 
 import java.time.Duration;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class CSVTaskFormat {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm_dd:MM:yyyy");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm_dd:MM:yyyy");
 
     public static String getHeader() {
         return "id,type,name,status,description,startTime,duration,epic";

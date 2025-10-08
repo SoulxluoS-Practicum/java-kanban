@@ -1,7 +1,7 @@
 package managers;
 
-import managers.exceptions.ManagerLoadException;
-import managers.exceptions.ManagerSaveException;
+import exceptions.ManagerLoadException;
+import exceptions.ManagerSaveException;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.SubTask;

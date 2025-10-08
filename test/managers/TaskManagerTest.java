@@ -1,5 +1,6 @@
 package managers;
 
+import exceptions.TaskOverlapException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
@@ -11,9 +12,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 abstract class TaskManagerTest<T extends TaskManager> {
 
@@ -187,8 +185,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task1 = new Task("Task-1 Name", "Task-1 Description", startTime, Duration.ofHours(1));
         taskManager.addTask(task1);
         Task task2 = new Task("Task-2 Name", "Task-2 Description", startTime, Duration.ofMinutes(1));
-        taskManager.addTask(task2);
-        assertFalse(taskManager.getTasks().contains(task2), "TaskManager добавил пересекающийся Task");
+        assertThrows(TaskOverlapException.class, () -> taskManager.addTask(task2), "TaskManager добавил пересекающийся Task");
 
         Task task3 = new Task("Task-3 Name", "Task-3 Description", startTime.plusDays(3), Duration.ofMinutes(20));
         taskManager.addTask(task3);
